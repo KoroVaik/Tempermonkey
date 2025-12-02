@@ -4,6 +4,7 @@
 // @version       4.4
 // @match         https://dev.azure.com/*
 // @grant         none
+// @downloadURL   https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
 // @updateURL     https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
 // ==/UserScript==
 
