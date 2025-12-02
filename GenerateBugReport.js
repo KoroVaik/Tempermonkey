@@ -7,8 +7,8 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setClipboard
 // @connect      allure.dev1.hisausapps.org
-// @downloadURL   https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/GenerateBugReport.js
-// @updateURL     https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/GenerateBugReport.js
+// @downloadURL  https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/GenerateBugReport.js
+// @updateURL    https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/GenerateBugReport.js
 // ==/UserScript==
 
 (function () {
