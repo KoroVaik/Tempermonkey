@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Allure Bug Report Generator (recursive)
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.7
 // @description  Generate bug report from skipped tests in Allure iframe (supports nested structure)
 // @match        https://allure.dev1.hisausapps.org:5050/allure-docker-service/projects/*/reports/latest/index.html*
 // @grant        GM_xmlhttpRequest
