@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Azure DevOps Release Category Filter Popup
 // @namespace     http://tampermonkey.net/
-// @version       4.2
+// @version       4.3
 // @match         https://dev.azure.com/*
 // @grant         none
 // ==/UserScript==
