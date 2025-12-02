@@ -9,7 +9,7 @@
 // @connect      allure.dev1.hisausapps.org
 // @downloadURL  https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/GenerateBugReport.js
 // @updateURL    https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/GenerateBugReport.js
-// ==/UserScript==
+// ==/UserScript== 
 
 (function () {
   'use strict';
