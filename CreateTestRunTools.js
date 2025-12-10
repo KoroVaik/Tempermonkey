@@ -11,7 +11,7 @@
 (function () {
     'use strict';
 
-    const staticCategories = ['TrackAccreditation', 'ProductionOnly', 'Smoke', 'PostLayoffReport', 'Registration', 'Production', 'DbApi', 'PublicApi'];
+    const staticCategories = ['TrackAccreditation', 'ProductionOnly', 'Smoke', 'PostLayoffReport', 'Registration', 'Production', 'DbApi', 'PublicApi', 'VetsList'];
     let popup = null;
     let observer = null;
     const MIN_BOTTOM_MARGIN = 400;
