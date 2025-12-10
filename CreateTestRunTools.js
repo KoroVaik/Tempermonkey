@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Azure DevOps Release Category Filter Popup
 // @namespace     http://tampermonkey.net/
-// @version       4.4
+// @version       4.5
 // @match         https://dev.azure.com/*
 // @grant         none
 // @downloadURL   https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
