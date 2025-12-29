@@ -2,7 +2,7 @@
 // @name          Azure DevOps Release Category Filter Popup - Enhanced
 // @description   Prepare a filter for the test run; Deselects all active stages in the release
 // @namespace     http://tampermonkey.net/
-// @version       5.8
+// @version       5.9
 // @match         https://dev.azure.com/*
 // @grant         none
 // @downloadURL   https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
@@ -243,12 +243,34 @@
     };
 
     const updateDraft = (filterInput, list) => {
-        const checked = list.querySelectorAll('input[type=radio]:checked');
-        const parts = Array.from(checked).map(r => {
+        const checked = Array.from(list.querySelectorAll('input[type=radio]:checked'));
+        
+        const inclusions = [];
+        const exclusions = [];
+    
+        checked.forEach(r => {
             const cat = r.name.replace('cat-', '');
-            return r.value === 'incl' ? `Category=${cat}` : `Category!=${cat}`;
+            if (r.value === 'incl') {
+                inclusions.push(`Category=${cat}`);
+            } else {
+                exclusions.push(`Category!=${cat}`);
+            }
         });
-        filterInput.value = parts.join('&');
+    
+        let result = '';
+    
+        // Logic: (Incl | Incl) & (Excl & Excl)
+        if (inclusions.length > 0 && exclusions.length > 0) {
+            result = `(${inclusions.join('|')})&(${exclusions.join('&')})`;
+        } else if (inclusions.length > 0) {
+            result = `(${inclusions.join('|')})`;
+        } else if (exclusions.length > 0) {
+            result = `(${exclusions.join('&')})`;
+        }
+    
+        filterInput.value = result;
+        
+        // Auto-resize the input field
         filterInput.style.height = 'auto';
         filterInput.style.height = filterInput.scrollHeight + 'px';
     };
