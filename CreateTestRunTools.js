@@ -2,7 +2,7 @@
 // @name          Azure DevOps Release Category Filter Popup - Enhanced
 // @description   Prepare a filter for the test run; Deselects all active stages in the release
 // @namespace     http://tampermonkey.net/
-// @version       5.9
+// @version       6.0
 // @match         https://dev.azure.com/*
 // @grant         none
 // @downloadURL   https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
@@ -245,36 +245,26 @@
     const updateDraft = (filterInput, list) => {
         const checked = Array.from(list.querySelectorAll('input[type=radio]:checked'));
         
-        const inclusions = [];
-        const exclusions = [];
-    
-        checked.forEach(r => {
-            const cat = r.name.replace('cat-', '');
-            if (r.value === 'incl') {
-                inclusions.push(`Category=${cat}`);
-            } else {
-                exclusions.push(`Category!=${cat}`);
-            }
-        });
-    
-        let result = '';
-    
-        // Logic: (Incl | Incl) & (Excl & Excl)
-        if (inclusions.length > 0 && exclusions.length > 0) {
-            result = `(${inclusions.join('|')})&(${exclusions.join('&')})`;
-        } else if (inclusions.length > 0) {
-            result = `(${inclusions.join('|')})`;
-        } else if (exclusions.length > 0) {
-            result = `(${exclusions.join('&')})`;
+        if (!checked.length) {
+            filterInput.value = '';
+            filterInput.style.height = 'auto';
+            return;
         }
     
-        filterInput.value = result;
-        
-        // Auto-resize the input field
+        const inc = checked.filter(r => r.value === 'incl').map(r => `Category=${r.name.replace('cat-', '')}`);
+        const exc = checked.filter(r => r.value === 'excl').map(r => `Category!=${r.name.replace('cat-', '')}`);
+    
+        const wrap = (arr, op) => arr.length > 1 ? `(${arr.join(op)})` : arr[0];
+    
+        const parts = [];
+        if (inc.length) parts.push(wrap(inc, '|'));
+        if (exc.length) parts.push(wrap(exc, '&'));
+    
+        filterInput.value = parts.join('&');
         filterInput.style.height = 'auto';
         filterInput.style.height = filterInput.scrollHeight + 'px';
     };
-
+    
     const renderCategoryList = (mainPopup) => {
         const list = mainPopup.querySelector('#category-list');
         const filterInput = mainPopup.querySelector('textarea');
