@@ -2,14 +2,14 @@
 // @name          Azure DevOps Release Category Filter Popup - Enhanced
 // @description   Prepare a filter for the test run; Deselects all active stages in the release
 // @namespace     http://tampermonkey.net/
-// @version       7.4
+// @version       7.5
 // @match         https://dev.azure.com/*
 // @downloadURL   https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
 // @updateURL     https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
 // ==/UserScript==
 
 (function () {
-    'use strict';;;
+    'use strict';;;;
 
     const CATEGORIES_STORAGE_KEY = 'userCategories';
     const INITIAL_CATEGORIES = ['TrackAccreditation', 'ProductionOnly', 'Smoke', 'PostLayoffReport', 'Registration', 'Production', 'DbApi', 'PublicApi', 'VetsList'];
