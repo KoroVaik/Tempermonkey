@@ -2,7 +2,7 @@
 // @name          Azure DevOps Release Category Filter Popup - Enhanced
 // @description   Prepare a filter for the test run; Deselects all active stages in the release
 // @namespace     http://tampermonkey.net/
-// @version       6.1
+// @version       7.1
 // @match         https://dev.azure.com/*
 // @grant         none
 // @downloadURL   https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
