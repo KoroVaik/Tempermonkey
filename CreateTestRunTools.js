@@ -245,20 +245,14 @@
     const updateDraft = (filterInput, list) => {
         const checked = Array.from(list.querySelectorAll('input[type=radio]:checked'));
         
-        if (!checked.length) {
-            filterInput.value = '';
-            filterInput.style.height = 'auto';
-            return;
-        }
-    
         const inc = checked.filter(r => r.value === 'incl').map(r => `Category=${r.name.replace('cat-', '')}`);
         const exc = checked.filter(r => r.value === 'excl').map(r => `Category!=${r.name.replace('cat-', '')}`);
     
-        const wrap = (arr, op) => arr.length > 1 ? `(${arr.join(op)})` : arr[0];
+        const wrap = (arr, operator, isGrouped) => arr.length > 1 ? (isGrouped ? `(${arr.join(operator)})` : arr.join(operator)) : arr[0];
     
         const parts = [];
-        if (inc.length) parts.push(wrap(inc, '|'));
-        if (exc.length) parts.push(wrap(exc, '&'));
+        if (inc.length) parts.push(wrap(inc, '|', exc.length));
+        if (exc.length) parts.push(wrap(exc, '&', inc.length));
     
         filterInput.value = parts.join('&');
         filterInput.style.height = 'auto';
