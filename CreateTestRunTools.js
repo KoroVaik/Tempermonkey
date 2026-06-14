@@ -2,7 +2,7 @@
 // @name          Azure DevOps Release Category Filter Popup - Enhanced
 // @description   Prepare a filter for the test run; Deselects all active stages in the release
 // @namespace     http://tampermonkey.net/
-// @version       7.8
+// @version       7.9
 // @match         https://dev.azure.com/*
 // @downloadURL   https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
 // @updateURL     https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
@@ -14,9 +14,17 @@
     const CATEGORIES_STORAGE_KEY = 'userCategories';
     const INITIAL_CATEGORIES = ['TrackAccreditation', 'ProductionOnly', 'Smoke', 'PostLayoffReport', 'Registration', 'Production', 'DbApi', 'PublicApi', 'VetsList'];
 
+    const ENV_OPTIONS = [
+        { label: 'qa', value: 'qa' },
+        { label: 'stg', value: 'staging' },
+        { label: 'rc', value: 'rc' },
+        { label: 'prod', value: 'production' }
+    ];
+
     let popup = null;
     let addCategoryPopup = null;
     let addCategoryButton = null;
+    let envSelector = null;
     let observer = null;
     const MIN_BOTTOM_MARGIN = 400;
     const POPUP_MAX_HEIGHT = 500;
@@ -86,6 +94,87 @@
     const clickAutomatedTriggerNodes = () => {
         document.querySelectorAll('div.automated-trigger-environment-node')
             .forEach(el => el.click());
+    };
+
+    const getEnvironmentPre = () => {
+        return document.evaluate(
+            "(//div[.//div[text()='Environment'] and @class='ms-List-cell']//pre)[2]",
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+        ).singleNodeValue;
+    };
+
+    const setEnvironmentValue = (envValue) => {
+        const pre = getEnvironmentPre();
+        if (!pre) { alert("Environment field not found!"); return; }
+
+        pre.click();
+
+        setTimeout(() => {
+            const input = document.evaluate(
+                "//div[.//div[text()='Environment'] and @class='ms-List-cell']//input",
+                document,
+                null,
+                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                null
+            ).singleNodeValue;
+
+            if (!input) { alert("Environment input not found!"); return; }
+
+            input.focus();
+            input.value = envValue;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            input.blur();
+        }, 50);
+    };
+
+    const createEnvSelector = (parent, topPos, leftPos) => {
+        envSelector = document.createElement('div');
+        envSelector.style.position = 'absolute';
+        envSelector.style.top = topPos + 'px';
+        envSelector.style.left = leftPos + 'px';
+        envSelector.style.background = '#0B3D91';
+        envSelector.style.color = '#fff';
+        envSelector.style.border = '1px solid #ccc';
+        envSelector.style.borderRadius = '8px';
+        envSelector.style.padding = '8px 12px';
+        envSelector.style.zIndex = 9999;
+        envSelector.style.display = 'flex';
+        envSelector.style.alignItems = 'center';
+        envSelector.style.gap = '10px';
+        envSelector.style.userSelect = 'none';
+        envSelector.style.whiteSpace = 'nowrap';
+
+        const currentPre = getEnvironmentPre();
+        const currentValue = currentPre ? currentPre.textContent.trim() : '';
+
+        ENV_OPTIONS.forEach(opt => {
+            const label = document.createElement('label');
+            label.style.display = 'flex';
+            label.style.alignItems = 'center';
+            label.style.gap = '3px';
+            label.style.cursor = 'pointer';
+
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'env-selector';
+            radio.value = opt.value;
+            if (currentValue === opt.value) radio.checked = true;
+
+            radio.addEventListener('change', () => setEnvironmentValue(opt.value));
+
+            const span = document.createElement('span');
+            span.textContent = opt.label;
+
+            label.appendChild(radio);
+            label.appendChild(span);
+            envSelector.appendChild(label);
+        });
+
+        parent.appendChild(envSelector);
     };
 
     const injectStyles = () => {
@@ -243,21 +332,21 @@
 
     const updateDraft = (filterInput, list) => {
         const checked = Array.from(list.querySelectorAll('input[type=radio]:checked'));
-        
+
         const inc = checked.filter(r => r.value === 'incl').map(r => `Category=${r.name.replace('cat-', '')}`);
         const exc = checked.filter(r => r.value === 'excl').map(r => `Category!=${r.name.replace('cat-', '')}`);
-    
+
         const wrap = (arr, operator, isGrouped) => arr.length > 1 ? (isGrouped ? `(${arr.join(operator)})` : arr.join(operator)) : arr[0];
-    
+
         const parts = [];
         if (inc.length) parts.push(wrap(inc, '|', exc.length));
         if (exc.length) parts.push(wrap(exc, '&', inc.length));
-    
+
         filterInput.value = parts.join('&');
         filterInput.style.height = 'auto';
         filterInput.style.height = filterInput.scrollHeight + 'px';
     };
-    
+
     const renderCategoryList = (mainPopup) => {
         const list = mainPopup.querySelector('#category-list');
         const filterInput = mainPopup.querySelector('textarea');
@@ -425,6 +514,8 @@
         parent.appendChild(addCategoryButton);
         parent.appendChild(popup);
 
+        createEnvSelector(parent, topPos - 40, leftPos + 114);
+
         addCategoryButton.addEventListener('click', () => {
             addCategoryButton.style.display = 'none';
             destroyAddCategoryPopup();
@@ -560,6 +651,10 @@
         if (addCategoryButton) {
             addCategoryButton.remove();
             addCategoryButton = null;
+        }
+        if (envSelector) {
+            envSelector.remove();
+            envSelector = null;
         }
         destroyAddCategoryPopup();
     };
