@@ -2,7 +2,7 @@
 // @name          Azure DevOps Release Category Filter Popup - Enhanced
 // @description   Prepare a filter for the test run; Deselects all active stages in the release
 // @namespace     http://tampermonkey.net/
-// @version       7.9
+// @version       7.91
 // @match         https://dev.azure.com/*
 // @downloadURL   https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
 // @updateURL     https://raw.githubusercontent.com/KoroVaik/Tempermonkey/refs/heads/main/CreateTestRunTools.js
@@ -26,7 +26,7 @@
     let addCategoryButton = null;
     let envSelector = null;
     let observer = null;
-    const MIN_BOTTOM_MARGIN = 400;
+    const MIN_BOTTOM_MARGIN_PERCENT = 15;
     const POPUP_MAX_HEIGHT = 500;
 
     const INCLUDED_COLOR_CLASS = 'category-included';
@@ -502,7 +502,7 @@
         let topPos = preRect.top + scrollTop - parentRect.top;
         const leftPos = (releaseRect.left + scrollLeft - 360 - parentRect.left);
 
-        const maxTop = window.scrollY + window.innerHeight - POPUP_MAX_HEIGHT - MIN_BOTTOM_MARGIN;
+        const maxTop = window.scrollY + window.innerHeight - POPUP_MAX_HEIGHT - (window.innerHeight * MIN_BOTTOM_MARGIN_PERCENT / 100);
         if (topPos > maxTop) topPos = maxTop;
 
         popup.style.top = topPos + 'px';
